@@ -36,3 +36,11 @@ each sub-list is sorted. The sub-lists are recombined, or swaps are made
 in the original array, to produce a sorted list of values.
 
 4 - Radix Sort:
+
+- A radix is the base of a number system. For the decimal number system, 
+the radix is 10.
+- Radix sort has two variants - MSD and LSD
+- Numbers are bucketed based on the value of digits moving left to right 
+(for MSD) or right to left (for LSD)
+- Radix sort is considered a non-comparison sort
+- The performance of radix sort is O(n)
