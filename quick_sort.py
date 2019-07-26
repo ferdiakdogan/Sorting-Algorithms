@@ -33,10 +33,10 @@ def quick_sort(list, start, end):
     quick_sort(list, less_than_pointer + 1, end)
 
 
-list = [5, 3, 1, 7, 4, 6, 2, 8]
-shuffle(list)
-print("PRE SORT: ", list)
-quick_sort(list, 0, len(list) - 1)
-print("POST SORT: ", list)
+# list = [5, 3, 1, 7, 4, 6, 2, 8]
+# shuffle(list)
+# print("PRE SORT: ", list)
+# quick_sort(list, 0, len(list) - 1)
+# print("POST SORT: ", list)
 
 

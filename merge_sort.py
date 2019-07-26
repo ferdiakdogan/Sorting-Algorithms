@@ -28,7 +28,7 @@ def merge(left, right):
     return result
 
 
-arr = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+# arr = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+# sorted_arr = merge_sort(arr)
+# print(sorted_arr)
 
