@@ -9,7 +9,7 @@ height = 600
 FPS = 30
 x = 0
 y = height
-w = 10
+w = 2
 
 # colors
 WHITE = (255, 255, 255)
@@ -26,7 +26,7 @@ clock = pygame.time.Clock()
 
 
 def initialize_array(length):
-    tobesorted = list(range(10, 510, 5))
+    tobesorted = list(range(1, 501, 1))
     random.shuffle(tobesorted)
     return tobesorted
 
@@ -77,7 +77,6 @@ def bubble_sort_optimized(arr):
     for i in range(len(arr)):
         for idx in range(len(arr) - i - 1):
             pygame.draw.rect(screen, red, (idx * w, y - arr[idx], w - 1, arr[idx]))
-            #time.sleep(.1)
             pygame.display.update()
             iterations += 1
             if arr[idx] > arr[idx + 1]:
@@ -98,9 +97,62 @@ def bubble_sort_optimized(arr):
     print("Optimized bubble sort completed in: {0} iterations".format(iterations))
 
 
-tobesorted = initialize_array(100)
+def quick_sort(lst, start=0, end=499):
+    # this portion of list has been sorted
+    if start >= end:
+        return
+
+    # select random element to be pivot
+    pivot_idx = random.randrange(start, end)
+    pivot_element = lst[pivot_idx]
+    pygame.draw.rect(screen, red, (pivot_idx * w, y - lst[pivot_idx], w - 1, lst[pivot_idx]))
+    pygame.display.update()
+    # swap random element with last element in sub-lists
+    swap(lst, pivot_idx, end)
+    pygame.draw.rect(screen, (0, 0, 0), (pivot_idx * w, 0, w - 1, y))
+    pygame.display.update()
+    pygame.draw.rect(screen, (0, 0, 0), (end * w, 0, w - 1, y))
+    pygame.display.update()
+    pygame.draw.rect(screen, WHITE, (pivot_idx * w, y - lst[pivot_idx], w - 1, lst[pivot_idx]))
+    pygame.display.update()
+    pygame.draw.rect(screen, red, (end * w, y - lst[end], w - 1, lst[end]))
+    pygame.display.update()
+    # tracks all elements which should be to left (lesser than) pivot
+    less_than_pointer = start
+
+    for i in range(start, end):
+        # we found an element out of place
+        if lst[i] < pivot_element:
+            # swap element to the right-most portion of lesser elements
+            swap(lst, i, less_than_pointer)
+            pygame.draw.rect(screen, (0, 0, 0), (i * w, 0, w - 1, y))
+            pygame.display.update()
+            pygame.draw.rect(screen, (0, 0, 0), (less_than_pointer * w, 0, w - 1, y))
+            pygame.display.update()
+            pygame.draw.rect(screen, WHITE, (i * w, y - lst[i], w - 1, lst[i]))
+            pygame.display.update()
+            pygame.draw.rect(screen, WHITE, (less_than_pointer * w, y - lst[less_than_pointer], w - 1, lst[less_than_pointer]))
+            pygame.display.update()
+            less_than_pointer += 1
+
+    # move pivot element to the right-most portion of lesser elements
+    swap(lst, less_than_pointer, end)
+    pygame.draw.rect(screen, (0, 0, 0), (less_than_pointer * w, 0, w - 1, y))
+    pygame.display.update()
+    pygame.draw.rect(screen, (0, 0, 0), (end * w, 0, w - 1, y))
+    pygame.display.update()
+    pygame.draw.rect(screen, WHITE, (less_than_pointer * w, y - lst[less_than_pointer], w - 1, lst[less_than_pointer]))
+    pygame.display.update()
+    pygame.draw.rect(screen, WHITE, (end * w, y - lst[end], w - 1, lst[end]))
+    pygame.display.update()
+    # recursively sort left and right sub-lists
+    quick_sort(lst, start, less_than_pointer - 1)
+    quick_sort(lst, less_than_pointer + 1, end)
+
+
+tobesorted = initialize_array(500)
 init_screen(tobesorted)
-bubble_sort_optimized(tobesorted)
+quick_sort(tobesorted)
 
 # ##### pygame loop #######
 running = True
