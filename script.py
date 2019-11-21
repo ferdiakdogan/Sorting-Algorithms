@@ -1,7 +1,5 @@
 import random
 import pygame
-import time
-
 
 # parameters
 width = 1200
@@ -16,13 +14,6 @@ WHITE = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-
-# initialize pygame
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Sorting Algorithms")
-clock = pygame.time.Clock()
 
 
 def initialize_array(length):
@@ -150,18 +141,194 @@ def quick_sort(lst, start=0, end=499):
     quick_sort(lst, less_than_pointer + 1, end)
 
 
-tobesorted = initialize_array(500)
-init_screen(tobesorted)
-quick_sort(tobesorted)
+def merge_sort(items, start = 0, end = 499):
+    if len(items) <= 1:
+        return items
+
+    middle_index = len(items) // 2
+    py_mid = (start + end + 1) // 2
+    left_split = items[:middle_index]
+    right_split = items[middle_index:]
+    start = py_mid - middle_index
+    end = py_mid
+    left_sorted = merge_sort(left_split, start, end)
+    for i in range(start, end):
+        pygame.draw.rect(screen, (0, 0, 0), (i * w, 0, w - 1, y))
+        pygame.display.update()
+        pygame.draw.rect(screen, WHITE, (i * w, y - left_sorted[i - py_mid], w - 1, left_sorted[i - py_mid]))
+        pygame.display.update()
+    start = py_mid
+    end = py_mid + middle_index
+    right_sorted = merge_sort(right_split, start, end)
+    for i in range(start, end):
+        pygame.draw.rect(screen, (0, 0, 0), (i * w, 0, w - 1, y))
+        pygame.display.update()
+        pygame.draw.rect(screen, WHITE, (i * w, y - right_sorted[i - py_mid], w - 1, right_sorted[i - py_mid]))
+        pygame.display.update()
+
+    return merge(left_sorted, right_sorted)
+
+
+def merge(left, right):
+    result = []
+    while left and right:
+        if left[0] < right[0]:
+            result.append(left[0])
+            left.pop(0)
+        else:
+            result.append(right[0])
+            right.pop(0)
+    if left:
+        result += left
+    if right:
+        result += right
+    if len(result) == 500:
+        for x in range(len(result)):
+            pygame.draw.rect(screen, (0, 0, 0), (x * w, 0, w - 1, y))
+            pygame.display.update()
+            pygame.draw.rect(screen, WHITE, (x * w, y - result[x], w - 1, result[x]))
+            pygame.display.update()
+    return result
+
+
+def radix_sort(to_be_sorted):
+    maximum_value = max(to_be_sorted)
+    max_exponent = len(str(maximum_value))
+    being_sorted = to_be_sorted[:]
+    iterations = 0
+    for exponent in range(max_exponent):
+        position = exponent + 1
+        index = -position
+
+        digits = [[] for i in range(10)]
+
+        for number in being_sorted:
+            number_as_a_string = str(number)
+            try:
+                digit = number_as_a_string[index]
+                digit = int(digit)
+            except IndexError:
+                digit = 0
+
+            digits[digit].append(number)
+
+            being_sorted = []
+            iterations += 1
+        for numeral in digits:
+            being_sorted.extend(numeral)
+        for x in range(len(being_sorted)):
+            pygame.draw.rect(screen, (0, 0, 0), (x * w, 0, w - 1, y))
+            pygame.display.update()
+            pygame.draw.rect(screen, WHITE, (x * w, y - being_sorted[x], w - 1, being_sorted[x]))
+            pygame.display.update()
+        print(being_sorted)
+        print("---------------------------------------")
+    print("Process completed in {0} iterations.".format(iterations))
+    return being_sorted
+
+
+"""print("Welcome to sorting algorithms visualization...")
+valid_choices = ["Bubble Sort Unoptimized", "Bubble Sort Optimized", "Quick Sort", "Merge Sort", "Radix Sort"]
+[print(item) for item in valid_choices]
+choice = input("\nWhich Algorithm do you want to see: ")
+if choice not in valid_choices:
+    print("please select from these algorithms: {0}".format(valid_choices))
+else:
+    print("\n*** You have chosen: {0} ***\n".format(choice))
+
+choice = choice.lower().replace(" ", "_") """
+
+# initialize pygame
+pygame.init()
+pygame.mixer.init()
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Sorting Algorithms")
+clock = pygame.time.Clock()
+
+# initialize screen
+font = pygame.font.Font('freesansbold.ttf', 32)
+text = font.render('Welcome to Sorting Algorithm Visualization!', True, green, blue)
+text2 = font.render('(Press mouse to continue)', True, red, (0, 0, 0))
+textRect = text.get_rect()
+textRect2 = text2.get_rect()
+textRect.center = (width // 2, height // 2)
+textRect2.center = (width // 2, 2 * height // 3)
+screen.blit(text, textRect)
+screen.blit(text2, textRect2)
+
 
 # ##### pygame loop #######
 running = True
+state = "INITIAL"
 while running:
     # keep running at the at the right speed
     clock.tick(FPS)
     pygame.display.update()
     # process input (events)
     for event in pygame.event.get():
+        if pygame.mouse.get_pressed()[0] and state is "INITIAL":
+            screen.fill((0, 0, 0))
+            text = font.render('Choose an algorithm to see: ', True, WHITE, (0, 0, 128))
+            text2 = font.render('Bubble Sort Unoptimized', False, WHITE)
+            text3 = font.render('Bubble Sort Optimized', False, WHITE)
+            text4 = font.render('Quick Sort', False, WHITE)
+            text5 = font.render('Merge Sort', False, WHITE)
+            text6 = font.render('Radix Sort', False, WHITE)
+            textRect = text.get_rect()
+            textRect2 = text2.get_rect()
+            textRect3 = text3.get_rect()
+            textRect4 = text4.get_rect()
+            textRect5 = text5.get_rect()
+            textRect6 = text6.get_rect()
+            textRect.center = (width // 2, 2 * height // 8)
+            textRect2.center = (width // 2, 3 * height // 8)
+            textRect3.center = (width // 2, 4 * height // 8)
+            textRect4.center = (width // 2, 5 * height // 8)
+            textRect5.center = (width // 2, 6 * height // 8)
+            textRect6.center = (width // 2, 7 * height // 8)
+            screen.blit(text, textRect)
+            screen.blit(text2, textRect2)
+            screen.blit(text3, textRect3)
+            screen.blit(text4, textRect4)
+            screen.blit(text5, textRect5)
+            screen.blit(text6, textRect6)
+            state = "READY"
+
+        elif pygame.mouse.get_pressed()[0] and state is "READY":
+            pos = pygame.mouse.get_pos()
+            if textRect2.collidepoint(pos):
+                screen.fill((0, 0, 0))
+                tobesorted = initialize_array(500)
+                init_screen(tobesorted)
+                bubble_sort_unoptimized(tobesorted)
+                state = "RUNNING"
+            elif textRect3.collidepoint(pos):
+                screen.fill((0, 0, 0))
+                tobesorted = initialize_array(500)
+                init_screen(tobesorted)
+                bubble_sort_optimized(tobesorted)
+                state = "RUNNING"
+            elif textRect4.collidepoint(pos):
+                screen.fill((0, 0, 0))
+                tobesorted = initialize_array(500)
+                init_screen(tobesorted)
+                quick_sort(tobesorted)
+                state = "RUNNING"
+            elif textRect5.collidepoint(pos):
+                screen.fill((0, 0, 0))
+                tobesorted = initialize_array(500)
+                init_screen(tobesorted)
+                sorted = merge_sort(tobesorted)
+                state = "RUNNING"
+            elif textRect6.collidepoint(pos):
+                screen.fill((0, 0, 0))
+                tobesorted = initialize_array(500)
+                init_screen(tobesorted)
+                sorted = radix_sort(tobesorted)
+                state = "RUNNING"
+        elif state is "RUNNING":
+            state = "INITIAL"
+
         # check for closing the window
         if event.type == pygame.QUIT:
             running = False
