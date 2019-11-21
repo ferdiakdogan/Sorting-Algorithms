@@ -29,10 +29,10 @@ def radix_sort(to_be_sorted):
     return being_sorted
 
 
-unsorted_list = [830, 921, 163, 373, 961, 559, 89, 199, 535, 959, 40, 641, 355, 689, 621, 183, 182, 524, 1]
-print(unsorted_list)
-print("--------------------------------------")
-radix_sort(unsorted_list)
+# unsorted_list = [830, 921, 163, 373, 961, 559, 89, 199, 535, 959, 40, 641, 355, 689, 621, 183, 182, 524, 1]
+# print(unsorted_list)
+# print("--------------------------------------")
+# radix_sort(unsorted_list)
 
 
 
